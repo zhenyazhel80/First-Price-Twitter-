@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: ./api
+    container_name: twitter-api
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=twitter
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    depends_on:
+      - db
+    networks:
+      - twitter-net
+
+  db:
+    image: postgres:14
+    platform: linux/amd64 
+    container_name: twitter-db
+    restart: always
+    environment:
+      POSTGRES_DB: twitter
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - twitter-net
+
+
+volumes:
+  db-data:
+
+networks:
+  twitter-net:
