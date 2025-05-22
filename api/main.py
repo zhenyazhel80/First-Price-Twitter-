@@ -30,9 +30,6 @@ app = FastAPI(
     ]
 )
 
-# --- Start background batch flusher ---
-start_batch_flusher(get_db)
-
 # --- CORS ---
 app.add_middleware(
     CORSMiddleware,
@@ -52,6 +49,9 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# --- Start background batch flusher ---
+start_batch_flusher(get_db)
 
 # --- USER ROUTES ---
 @app.get("/users/", response_model=list[schemas.User], tags=["Users"], summary="List All Accounts")
